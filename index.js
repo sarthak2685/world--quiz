@@ -1,19 +1,23 @@
 import bodyParser from "body-parser";
 import express from 'express';
 import pg from "pg";
-const app = express();
-const port = 3000;
 
+
+
+const app = express();
+const port = process.env.PORT || 3000;  // Use the port from environment or default to 3000
 
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost" ,
-    database: "world",
-    password: "123456789",
-    port: 5432,
-})
+    user: process.env.DB_USER || "postgres",  // Default values for local development
+    host: process.env.DB_HOST || "localhost",
+    database: process.env.DB_NAME || "world",
+    password: process.env.DB_PASSWORD || "123456789",
+    port: process.env.DB_PORT || 5432,
+});
 
 db.connect()
+    .then(() => console.log('Connected to the database'))
+    .catch(err => console.error('Database connection error', err.stack));
 
 // In-memory data store
 let quiz = [
